@@ -5,6 +5,7 @@
   :author "yehohanan7@gmail.com"
   :license "Specify license here"
   :serial t
+  :depends-on (#:prove)
   :components ((:file "package")
                (:file "cl-kafka")))
 
