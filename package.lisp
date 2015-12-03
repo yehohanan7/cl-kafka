@@ -1,3 +1,4 @@
 (defpackage #:cl-kafka
-  (:use #:cl))
+  (:use #:cl)
+  (:export :hello))
 
