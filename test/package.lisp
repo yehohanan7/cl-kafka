@@ -2,5 +2,3 @@
   (:use #:cl #:prove #:cl-kafka))
 
 (in-package #:cl-kafka-test)
-
-
