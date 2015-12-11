@@ -1,4 +1,5 @@
 (defpackage #:cl-kafka
   (:use #:cl)
-  (:export :hello))
+  (:export :hello)
+  (:export :nlet))
 

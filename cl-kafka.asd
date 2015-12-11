@@ -6,6 +6,7 @@
   :components ((:module "src"
                 :components
                 ((:file "package")
+                 (:file "lambda")
                  (:file "cl-kafka")))))
 
 (asdf:defsystem #:cl-kafka-test
