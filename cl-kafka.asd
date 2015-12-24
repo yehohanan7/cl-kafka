@@ -2,7 +2,10 @@
   :description "Describe cl-kafka here"
   :author "yehohanan7@gmail.com"
   :serial t
-  :depends-on (#:dexador)
+  :depends-on (#:dexador
+               #:uuid
+               #:usocket
+               #:bordeaux-threads)
   :components ((:module "src"
                 :components
                 ((:file "package")
