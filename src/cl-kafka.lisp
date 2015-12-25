@@ -4,6 +4,13 @@
   (loop for i from (/ n 8) downto 1
         do  (write-byte (ldb (byte 8 (* (1- i) 8)) value) stream)))
 
+(defun read-bytes (n stream)
+  (let ((value 0) (byte-size (/ n 8)))
+    (dotimes (i byte-size)
+      (setf value (+ (* value #x100) (read-byte stream))))
+    value))
+
+
 (defun zk-connect (host port)
   (let* ((socket (usocket:socket-connect host port :element-type '(unsigned-byte 8)))
          (socket-stream (usocket:socket-stream socket))
@@ -11,6 +18,7 @@
          (last-zxid 0)
          (timeout 10000)
          (session-id 0)
+         (read-only 0)
          (password (flexi-streams:string-to-octets (make-string 16 :initial-element (code-char 0))))
          (ims (flexi-streams:make-in-memory-output-stream))
          (stream (flexi-streams:make-flexi-stream ims)))
@@ -20,12 +28,21 @@
     (write-bytes session-id 64 stream)
     (write-bytes (length password) 32 stream)
     (write-sequence password stream)
+    (write-byte read-only stream)
     (force-output stream)
     (let ((bytes (flexi-streams:get-output-stream-sequence ims)))
       (write-bytes (length bytes) 32 socket-stream)
       (write-sequence bytes socket-stream)
       (force-output socket-stream)
-      (read-byte socket-stream))))
+      (format t "size: ~A" (read-bytes 32 socket-stream))
+      (format t "protocol: ~A" (read-bytes 32 socket-stream))
+      (format t "timeout: ~A" (read-bytes 32 socket-stream))
+      (format t "session id: ~A" (read-bytes 64 socket-stream))
+      (let* ((password-size (read-bytes 32 socket-stream))
+             (password (make-array password-size :element-type '(unsigned-byte 8))))
+        (read-sequence password socket-stream :end password-size)
+        (format t "password size: ~A" password-size)
+        (format t "password: ~A" (flexi-streams:octets-to-string password))))))
 
 (zk-connect "localhost" 2181)
 
