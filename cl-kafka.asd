@@ -21,6 +21,7 @@
   :components ((:module "test"
                 :components
                 ((:file "package")
+                 (:file "cl-kafka-encoder-test")
                  (:file "cl-kafka-test")
                  (:file "run-tests")))))
 

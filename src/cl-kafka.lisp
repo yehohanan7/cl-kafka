@@ -35,4 +35,3 @@
     (format t "length")
     (topics socket-stream)))
 
-(meta-data "localhost" 9092)
