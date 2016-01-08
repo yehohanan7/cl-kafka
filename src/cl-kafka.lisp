@@ -24,14 +24,16 @@
   (bytes 32 value))
 
 (defun astring (value)
-  (let* ((ims (flexi-streams:make-in-memory-output-stream))
-         (stream (flexi-streams:make-flexi-stream ims)))
-    (concatenate 'vector (int16 (length value)) (flexi-streams:string-to-octets value))))
+  (concatenate 'vector (int16 (length value)) (flexi-streams:string-to-octets value)))
 
 (defun anarray (xs)
-  (let* ((ims (flexi-streams:make-in-memory-output-stream))
-         (stream (flexi-streams:make-flexi-stream ims)))
-    (int32 (length xs))))
+  (int32 (length xs)))
+
+(defun read-int16 (stream)
+  (read-bytes 16 stream))
+
+(defun read-int32 (stream)
+  (read-bytes 32 stream))
 
 (defun meta-data (host port)
   (let* ((socket (usocket:socket-connect host port :element-type '(unsigned-byte 8)))
@@ -45,7 +47,9 @@
     (format t "Fetching metadata..")
     (write-sequence (concatenate 'vector (int32 (length message)) message) socket-stream)
     (force-output socket-stream)
-    (format t "size: ~A" (read-bytes 32 socket-stream))
-    (format t "correlation-id : ~A" (read-bytes 32 socket-stream))))
+    (let ((size (read-int32 socket-stream))
+          (correlation-id (read-int32 socket-stream))) 
+      (format t "size: ~A" size)
+      (format t "correlation-id : ~A" correlation-id))))
 
 (meta-data "localhost" 9092)
