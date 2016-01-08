@@ -1,9 +1,11 @@
-(in-package #:cl-kafka)
+(defpackage #:cl-kafka-lambda
+  (:use #:cl)
+  (:export :defmacro/g!))
+(in-package #:cl-kafka-lambda)
 
 (defmacro nlet (n letargs &rest body)
   `(labels ((,n ,(mapcar #'car letargs) ,@body))
      (,n ,@(mapcar #'cadr letargs))))
-
 
 (defun g!-symbol-p (s)
   (and (symbolp s)

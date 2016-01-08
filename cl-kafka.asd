@@ -8,8 +8,9 @@
                #:bordeaux-threads)
   :components ((:module "src"
                 :components
-                ((:file "package")
-                 (:file "lambda")
+                ((:file "lambda")
+                 (:file "encoder")
+                 (:file "decoder")
                  (:file "cl-kafka")))))
 
 (asdf:defsystem #:cl-kafka-test
