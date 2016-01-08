@@ -3,3 +3,4 @@
 (ql:quickload :cl-kafka)
 (setf prove:*enable-colors* t)
 (prove:run :cl-kafka-test)
+(quit)
