@@ -11,6 +11,7 @@
                 ((:file "lambda")
                  (:file "encoder")
                  (:file "decoder")
+                 (:file "meta-data")
                  (:file "cl-kafka")))))
 
 (asdf:defsystem #:cl-kafka-test

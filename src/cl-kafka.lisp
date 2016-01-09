@@ -1,26 +1,10 @@
 (defpackage #:cl-kafka
-  (:use #:cl #:cl-kafka-encoder #:cl-kafka-decoder)
+  (:use #:cl #:cl-kafka-encoder #:cl-kafka-decoder #:cl-kafka-meta-data)
   (:export :meta-data))
 (in-package #:cl-kafka)
 
-(defclass broker ()
-  ((id :accessor id :initarg :id)
-   (host :accessor host :initarg :host)
-   (port :accessor port :initarg :port)))
 
-(defun broker (stream)
-  (let* ((id (decode stream :int32))
-         (host (decode stream :string))
-         (port (decode stream :int32)))
-    (make-instance 'broker :id id :host host :port port)))
-
-(defun topics (stream)
-  (let* ((size (decode stream :int32))
-         (correlation-id (decode stream :int32))
-         (brokers (decode stream :array #'broker)))
-    (values brokers)))
-
-(defun meta-data (host port)
+(defun get-meta-data (host port)
   (let* ((socket (usocket:socket-connect host port :element-type '(unsigned-byte 8)))
          (socket-stream (usocket:socket-stream socket))
          (api-key (encode 3 :int16))
@@ -33,5 +17,7 @@
     (write-sequence (concatenate 'vector (encode (length message) :int32) message) socket-stream)
     (force-output socket-stream)
     (format t "length")
-    (topics socket-stream)))
+    (to-meta-data socket-stream)))
 
+
+(get-meta-data "localhost" 9092)
