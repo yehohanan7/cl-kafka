@@ -1,6 +1,5 @@
 (in-package #:cl-kafka)
 
-
 (defun flatten (structure)
   (cond ((null structure) nil)
         ((atom structure) (list structure))

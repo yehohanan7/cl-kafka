@@ -38,10 +38,14 @@
      (defclass ,name ,superclasses
        ,(clos-slots fields))
      
-     (defmethod encode ((message ,name))
+     (defmethod encode ((message ,name) stream)
        (let ((encoded-message))
          (dolist (field ',fields)
            (let* ((encoder (encoder field))
                   (encoded-value (funcall encoder (slot-value message (car field)))))
              (setf encoded-message (concatenate 'vector encoded-message encoded-value))))
-         (concatenate 'vector (encode-int32 (length encoded-message)) encoded-message)))))
+         (write-sequence (concatenate 'vector (encode-int32 (length encoded-message)) encoded-message) stream)
+         (force-output stream)))))
+
+
+
