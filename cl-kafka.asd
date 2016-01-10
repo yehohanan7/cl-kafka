@@ -8,9 +8,12 @@
                #:bordeaux-threads)
   :components ((:module "src"
                 :components
-                ((:file "lambda")
+                ((:file "package")
+                 (:file "lambda")
+                 (:file "macros")
                  (:file "encoder")
                  (:file "decoder")
+                 (:file "messages")
                  (:file "meta-data")
                  (:file "cl-kafka")))))
 

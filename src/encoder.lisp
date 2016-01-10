@@ -1,7 +1,4 @@
-(defpackage #:cl-kafka-encoder
-  (:use #:cl #:cl-kafka-lambda)
-  (:export :encode))
-(in-package #:cl-kafka-encoder)
+(in-package #:cl-kafka)
 
 (defun write-bytes (value n stream)
   (loop for i from (/ n 8) downto 1
@@ -14,20 +11,18 @@
      (force-output g!stream)
      (flexi-streams:get-output-stream-sequence g!ims)))
 
-(defgeneric encode (value _))
-
-(defmethod encode (value (_ (eql :int16)))
+(defun encode-int16 (value)
   (bytes 16 value))
 
-(defmethod encode (value (_ (eql :int32)))
+(defun encode-int32 (value)
   (bytes 32 value))
 
-(defmethod encode (value (_ (eql :string)))
-  (concatenate 'vector (encode (length value) :int16) (flexi-streams:string-to-octets value)))
+(defun encode-string (value)
+  (concatenate 'vector (encode-int16 (length value)) (flexi-streams:string-to-octets value)))
 
-(defmethod encode (value (_ (eql :array)))
+(defun encode-array (value)
   "fix me"
-  (encode (length value) :int32))
+  (encode-int32 (length value)))
 
 
 

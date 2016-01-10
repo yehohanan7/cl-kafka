@@ -1,8 +1,4 @@
-(defpackage #:cl-kafka-meta-data
-  (:use #:cl #:cl-kafka-decoder)
-  (:export :to-meta-data))
-
-(in-package #:cl-kafka-meta-data)
+(in-package #:cl-kafka)
 
 (defclass broker ()
   ((id :accessor id :initarg :id)

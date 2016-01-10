@@ -1,7 +1,4 @@
-(defpackage #:cl-kafka-decoder
-  (:use #:cl)
-  (:export :decode))
-(in-package #:cl-kafka-decoder)
+(in-package #:cl-kafka)
 
 (defun read-bytes (n stream)
   (let ((value 0) (byte-size (/ n 8)))
