@@ -12,15 +12,8 @@
          ,@body))))
 
 ;; message macros
-(defun encoder (field)
-  (case (cadr field)
-    (:int16 #'encode-int16)
-    (:int32 #'encode-int32)
-    (:string #'encode-string)
-    (:array #'encode-array)))
-
 (defun clos-slot (field)
-  (destructuring-bind (name type &optional default-value) field
+  (destructuring-bind (name &optional default-value) field
     (let ((slot `(,name :accessor ,name :initarg ,(intern (symbol-name name) :keyword))))
       (if default-value
           (append slot `(:initform ,default-value))
@@ -37,9 +30,9 @@
      (defmethod encode ((message ,name) stream)
        (let ((ims (flexi-streams:make-in-memory-output-stream)))
          (dolist (field ',fields)
-           (funcall (encoder field) (slot-value message (car field)) ims))
+           (encode (slot-value message (car field)) ims))
          (let ((ims-sequence (flexi-streams:get-output-stream-sequence ims)))
-           (encode-int32 (length ims-sequence) stream)
+           (encode (make-instance 'int32 :value (length ims-sequence)) stream)
            (write-sequence ims-sequence stream)
            (force-output stream))))))
 

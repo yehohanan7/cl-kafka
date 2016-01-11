@@ -10,7 +10,7 @@
                 :components
                 ((:file "package")
                  (:file "lambda")
-                 (:file "encoder")
+                 (:file "datatypes")
                  (:file "decoder")
                  (:file "macros")
                  (:file "messages")
