@@ -11,10 +11,8 @@
                 ((:file "package")
                  (:file "lambda")
                  (:file "datatypes")
-                 (:file "decoder")
                  (:file "macros")
                  (:file "messages")
-                 (:file "meta-data")
                  (:file "cl-kafka")))))
 
 (asdf:defsystem #:cl-kafka-test

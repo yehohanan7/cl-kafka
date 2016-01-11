@@ -22,6 +22,7 @@
 (defun clos-slots (fields)
     (mapcar #'clos-slot fields))
 
+
 (defmacro define-message (name superclasses fields)
   `(progn
      (defclass ,name ,superclasses
@@ -32,9 +33,16 @@
          (dolist (field ',fields)
            (encode (slot-value message (car field)) ims))
          (let ((ims-sequence (flexi-streams:get-output-stream-sequence ims)))
-           (encode (make-instance 'int32 :value (length ims-sequence)) stream)
+           (encode (int32 (length ims-sequence)) stream)
            (write-sequence ims-sequence stream)
-           (force-output stream))))))
+           (force-output stream))))
+
+     (defmethod decode ((message ,name) stream)
+       (let* ((size (read-bytes 32 stream))
+              (correlation-id (read-bytes 32 stream))
+              (response (make-instance ',name)))
+         ,@(mapcar #'(lambda (field) `(setf (,(car field) message) (decode (,(car field) message) stream))) fields)
+         (values correlation-id response)))))
 
 
 

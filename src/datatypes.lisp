@@ -1,17 +1,25 @@
 (in-package #:cl-kafka)
 
-(defclass int16 ()
-  ((value :accessor value :initarg :value)))
+(defmacro define-type (name)
+  `(progn
+     (defclass ,name ()
+       ((value :accessor value :initarg :value)))
 
-(defclass int32 ()
-  ((value :accessor value :initarg :value)))
+     (defun ,name (&optional value)
+       (make-instance ',name :value value))))
 
-(defclass bstring ()
-  ((value :accessor value :initarg :value)))
+(define-type int16)
+(define-type int32)
+(define-type bstring)
 
 (defclass barray ()
-  ((value :accessor value :initarg :value)))
+  ((element-type :accessor element-type :initarg :element-type)
+   (elements :accessor elements :initarg :elements)))
 
+(defun barray (element-type &optional elements)
+  (make-instance 'barray :element-type element-type :elements elements))
+
+;; encoders
 (defun write-bytes (value n stream)
   (loop for i from (/ n 8) downto 1
         do  (write-byte (ldb (byte 8 (* (1- i) 8)) value) stream)))
@@ -27,20 +35,38 @@
     (encode (int16 (length value)) stream)
     (write-sequence (flexi-streams:string-to-octets value) stream)))
 
-(defmethod encode ((element barray) stream)
-  (let ((size (length (value element))))
+(defmethod encode ((barray barray) stream)
+  (let ((size (length (elements barray))))
     (encode (int32 size) stream)
-    (dolist (x (value element))
+    (dolist (x (elements barray))
       (encode x stream))))
 
-(defun int16 (value)
-  (make-instance 'int16 :value value))
+;; decoders
+(defun read-bytes (n stream)
+  (let ((value 0) (byte-size (/ n 8)))
+    (dotimes (i byte-size)
+      (setf value (+ (* value #x100) (read-byte stream))))
+    value))
 
-(defun int32 (value)
-  (make-instance 'int32 :value value))
+(defmethod decode ((element int16) stream)
+  (int16 (read-bytes 16 stream)))
 
-(defun bstring (value)
-  (make-instance 'bstring :value value))
+(defmethod decode ((element int32) stream)
+  (int32 (read-bytes 32 stream)))
 
-(defun barray (value)
-  (make-instance 'barray :value value))
+(defmethod decode ((element bstring) stream)
+  (let* ((size (read-bytes 16 stream))
+         (bytes (make-array size :fill-pointer 0)))
+    (dotimes (i size)
+      (vector-push (read-byte stream) bytes))
+    (bstring (flexi-streams:octets-to-string bytes))))
+
+(defmethod decode ((barray barray) stream)
+  (let* ((size (read-bytes 32 stream))
+         (elements (make-array size :fill-pointer 0))
+         (element-type (element-type barray)))
+    (dotimes (i size)
+      (vector-push (decode (make-instance element-type) stream) elements))
+    (make-instance 'barray :element-type element-type :elements elements)))
+
+
