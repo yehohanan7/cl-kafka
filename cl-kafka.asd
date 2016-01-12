@@ -10,8 +10,8 @@
                 :components
                 ((:file "package")
                  (:file "lambda")
-                 (:file "datatypes")
-                 (:file "macros")
+                 (:file "primitives")
+                 (:file "composite")
                  (:file "messages")
                  (:file "cl-kafka")))))
 

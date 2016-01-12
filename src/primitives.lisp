@@ -65,6 +65,3 @@
     (dotimes (i size)
       (setf result (cons (decode element stream) result)))
     result))
-
-
-
