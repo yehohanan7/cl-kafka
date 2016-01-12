@@ -40,7 +40,10 @@
      (defmethod decode ((message ,name) stream)
        (let ((response (make-instance ',name)))
          ,@(mapcar #'(lambda (field) `(setf (,(car field) response) (decode (,(car field) response) stream))) fields)
-         response))))
+         response))
+
+     (defun ,name ()
+       (make-instance ',name))))
 
 
 (defun decode-response (name stream)

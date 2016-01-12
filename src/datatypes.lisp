@@ -12,13 +12,6 @@
 (define-type int32)
 
 
-(defclass barray ()
-  ((element-type :accessor element-type :initarg :element-type)
-   (elements :accessor elements :initarg :elements)))
-
-(defun barray (element-type &optional elements)
-  (make-instance 'barray :element-type element-type :elements elements))
-
 ;; encoders
 (defun write-bytes (value n stream)
   (loop for i from (/ n 8) downto 1
@@ -34,11 +27,16 @@
   (encode (int16 (length value)) stream)
   (write-sequence (flexi-streams:string-to-octets value) stream))
 
-(defmethod encode ((barray barray) stream)
-  (let ((size (length (elements barray))))
-    (encode (int32 size) stream)
-    (dolist (x (elements barray))
-      (encode x stream))))
+(defun encode-array (elements stream)
+  (encode (int32 (length elements)) stream)
+  (dolist (x elements)
+    (encode x stream)))
+
+(defmethod encode ((elements null) stream)
+  (encode-array elements stream))
+
+(defmethod encode ((elements cons) stream)
+  (encode-array elements stream))
 
 ;; decoders
 (defun read-bytes (n stream)
@@ -60,13 +58,13 @@
       (vector-push (read-byte stream) bytes))
     (flexi-streams:octets-to-string bytes)))
 
-(defmethod decode ((barray barray) stream)
+(defmethod decode ((elements cons) stream)
   (let* ((size (read-bytes 32 stream))
-         (elements (make-array size :fill-pointer 0))
-         (element-type (element-type barray))
-         (element (make-instance element-type)))
+         (element (car elements))
+         (result '()))
     (dotimes (i size)
-      (vector-push (decode element stream) elements))
-    (make-instance 'barray :element-type element-type :elements elements)))
+      (setf result (cons (decode element stream) result)))
+    result))
+
 
 
