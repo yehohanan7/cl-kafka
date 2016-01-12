@@ -4,7 +4,7 @@
   ((api-key (int16 3))
    (api-version (int16 0))
    (correlation-id (int32))
-   (client-id (bstring "cl-kafka"))
+   (client-id "cl-kafka")
    (topics (barray 'string nil))))
 
 (define-message partition ()
@@ -16,12 +16,12 @@
 
 (define-message topic ()
   ((error-code (int16))
-   (name (bstring))
+   (name "")
    (partitions (barray 'partition))))
 
 (define-message broker ()
   ((id (int32))
-   (host (bstring))
+   (host "")
    (port (int32))))
 
 (define-message meta-data-response ()

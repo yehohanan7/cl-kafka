@@ -8,8 +8,12 @@
 
 (get-meta-data "localhost" 9092)
 
-(multiple-value-bind (correlation-id response) (get-meta-data "localhost" 9092)
+'(multiple-value-bind (correlation-id response) (get-meta-data "localhost" 9092)
   (mapcar #'(lambda (broker) (id broker)) (elements (brokers response))))
+
+
+
+
 
 
 

@@ -10,7 +10,7 @@
 
 (define-type int16)
 (define-type int32)
-(define-type bstring)
+
 
 (defclass barray ()
   ((element-type :accessor element-type :initarg :element-type)
@@ -30,10 +30,9 @@
 (defmethod encode ((element int32) stream)
   (write-bytes (value element) 32 stream))
 
-(defmethod encode ((element bstring) stream)
-  (let ((value (value element)))
-    (encode (int16 (length value)) stream)
-    (write-sequence (flexi-streams:string-to-octets value) stream)))
+(defmethod encode ((value string) stream)
+  (encode (int16 (length value)) stream)
+  (write-sequence (flexi-streams:string-to-octets value) stream))
 
 (defmethod encode ((barray barray) stream)
   (let ((size (length (elements barray))))
@@ -54,12 +53,12 @@
 (defmethod decode ((element int32) stream)
   (int32 (read-bytes 32 stream)))
 
-(defmethod decode ((element bstring) stream)
+(defmethod decode ((element string) stream)
   (let* ((size (read-bytes 16 stream))
          (bytes (make-array size :fill-pointer 0)))
     (dotimes (i size)
       (vector-push (read-byte stream) bytes))
-    (bstring (flexi-streams:octets-to-string bytes))))
+    (flexi-streams:octets-to-string bytes)))
 
 (defmethod decode ((barray barray) stream)
   (let* ((size (read-bytes 32 stream))
