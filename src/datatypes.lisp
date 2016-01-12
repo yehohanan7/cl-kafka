@@ -64,9 +64,10 @@
 (defmethod decode ((barray barray) stream)
   (let* ((size (read-bytes 32 stream))
          (elements (make-array size :fill-pointer 0))
-         (element-type (element-type barray)))
+         (element-type (element-type barray))
+         (element (make-instance element-type)))
     (dotimes (i size)
-      (vector-push (decode (make-instance element-type) stream) elements))
+      (vector-push (decode element stream) elements))
     (make-instance 'barray :element-type element-type :elements elements)))
 
 

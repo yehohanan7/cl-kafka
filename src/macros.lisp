@@ -38,11 +38,17 @@
            (force-output stream))))
 
      (defmethod decode ((message ,name) stream)
-       (let* ((size (read-bytes 32 stream))
-              (correlation-id (read-bytes 32 stream))
-              (response (make-instance ',name)))
-         ,@(mapcar #'(lambda (field) `(setf (,(car field) message) (decode (,(car field) message) stream))) fields)
-         (values correlation-id response)))))
+       (let ((response (make-instance ',name)))
+         ,@(mapcar #'(lambda (field) `(setf (,(car field) response) (decode (,(car field) response) stream))) fields)
+         response))))
 
+
+(defun decode-response (name stream)
+  (let* ((size (read-bytes 32 stream))
+         (correlation-id (read-bytes 32 stream)))
+    (values correlation-id (decode (make-instance name) stream))))
+
+(defun encode-request (name stream &key ((:correlation-id cid)))
+  (encode (make-instance name :correlation-id (int32 cid)) stream))
 
 
