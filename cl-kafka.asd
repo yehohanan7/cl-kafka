@@ -24,7 +24,6 @@
   :components ((:module "test"
                 :components
                 ((:test-file "package")
-                 (:test-file "cl-kafka-encoder-test")
                  (:test-file "cl-kafka-test")
                  (:test-file "run-tests"))))
   :perform (test-op :after (op c)

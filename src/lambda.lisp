@@ -6,3 +6,7 @@
         (t (mapcan #'flatten structure))))
 
 
+(defun equalp* (first &rest rest)
+  (every #'(lambda (x) (equalp first x)) rest))
+
+

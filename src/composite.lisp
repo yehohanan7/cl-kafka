@@ -47,11 +47,10 @@
 
 
 (defun decode-response (name stream)
-  (let* ((size (read-bytes 32 stream))
-         (correlation-id (read-bytes 32 stream)))
-    (values correlation-id (decode (make-instance name) stream))))
+  (let* ((size (read-bytes 32 stream)))
+    (decode (make-instance name) stream)))
 
-(defun encode-request (name stream &key ((:correlation-id cid)))
-  (encode (make-instance name :correlation-id (int32 cid)) stream))
+(defun encode-request (name stream &key (correlation-id 123))
+  (encode (make-instance name :correlation-id (int32 correlation-id)) stream))
 
 

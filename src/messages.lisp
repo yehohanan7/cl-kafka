@@ -25,6 +25,7 @@
    (port (int32))))
 
 (define-message meta-data-response ()
-  ((brokers (list (broker)))
+  ((correlation-id (int32))
+   (brokers (list (broker)))
    (topics (list (topic)))))
 
