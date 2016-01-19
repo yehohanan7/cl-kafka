@@ -6,5 +6,6 @@
     (encode-request 'meta-data-request socket-stream :correlation-id 123)
     (decode-response 'meta-data-response socket-stream)))
 
+
 (let ((response (get-meta-data "localhost" 9092)))
-  (mapcar #'(lambda (broker) (value (id broker))) (brokers response)))
+  (format t "~A" (encode-json response)))

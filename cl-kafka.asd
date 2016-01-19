@@ -5,6 +5,7 @@
   :depends-on (#:dexador
                #:uuid
                #:usocket
+               #:cl-json
                #:bordeaux-threads)
   :components ((:module "src"
                 :components
