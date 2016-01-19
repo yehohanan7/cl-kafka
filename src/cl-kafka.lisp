@@ -8,18 +8,3 @@
 
 (let ((response (get-meta-data "localhost" 9092)))
   (mapcar #'(lambda (broker) (value (id broker))) (brokers response)))
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-

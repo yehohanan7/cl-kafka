@@ -1,32 +1,14 @@
 (in-package #:cl-kafka)
 
-(defun g!-symbol-p (s)
-  (and (symbolp s)
-       (> (length (symbol-name s)) 2)
-       (string= (symbol-name s) "G!" :start1 0 :end1 2)))
-
-(defmacro defmacro/g!  (name args &rest body)
-  (let ((syms (remove-duplicates (remove-if-not #'g!-symbol-p (flatten body)))))
-    `(defmacro ,name ,args
-       (let ,(mapcar (lambda (s) `(,s (gensym))) syms)
-         ,@body))))
-
-;; message macros
-(defun clos-slot (field)
-  (destructuring-bind (name &optional default-value) field
-    (let ((slot `(,name :accessor ,name :initarg ,(intern (symbol-name name) :keyword))))
-      (if default-value
-          (append slot `(:initform ,default-value))
-          slot))))
-
-(defun clos-slots (fields)
-    (mapcar #'clos-slot fields))
-
+(defun to-slot (field)
+  (destructuring-bind (name &optional value) field
+    `(,name :accessor ,name :initarg ,(intern (symbol-name name) :keyword) :initform ,value)))
 
 (defmacro define-message (name superclasses fields)
   `(progn
+     
      (defclass ,name ,superclasses
-       ,(clos-slots fields))
+       ,(mapcar #'(lambda (field) (to-slot field)) fields))
      
      (defmethod encode ((message ,name) stream)
        (let ((ims (flexi-streams:make-in-memory-output-stream)))
@@ -39,12 +21,14 @@
 
      (defmethod decode ((message ,name) stream)
        (let ((response (make-instance ',name)))
-         ,@(mapcar #'(lambda (field) `(setf (,(car field) response) (decode (,(car field) response) stream))) fields)
+         (dolist (field ',fields)
+           (let ((field-name (car field)))
+             (setf (slot-value response field-name)
+                 (decode (slot-value response field-name) stream))))
          response))
 
      (defun ,name ()
        (make-instance ',name))))
-
 
 (defun decode-response (name stream)
   (let* ((size (read-bytes 32 stream)))
