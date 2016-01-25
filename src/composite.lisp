@@ -8,7 +8,7 @@
   `(progn
      
      (defclass ,name ,superclasses
-       ,(mapcar #'(lambda (field) (to-slot field)) fields))
+       ,(mapcar #'to-slot fields))
      
      (defmethod encode ((message ,name) stream)
        (let ((ims (flexi-streams:make-in-memory-output-stream)))

@@ -10,6 +10,7 @@
 
 (define-type int16)
 (define-type int32)
+(define-type int64)
 
 
 ;; encoders
@@ -22,6 +23,9 @@
 
 (defmethod encode ((element int32) stream)
   (write-bytes (value element) 32 stream))
+
+(defmethod encode ((element int64) stream)
+  (write-bytes (value element) 64 stream))
 
 (defmethod encode ((value string) stream)
   (encode (int16 (length value)) stream)
@@ -50,6 +54,9 @@
 
 (defmethod decode ((element int32) stream)
   (int32 (read-bytes 32 stream)))
+
+(defmethod decode ((element int64) stream)
+  (int64 (read-bytes 64 stream)))
 
 (defmethod decode ((element string) stream)
   (let* ((size (read-bytes 16 stream))

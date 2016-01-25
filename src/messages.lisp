@@ -29,3 +29,13 @@
    (brokers (list (broker)))
    (topics (list (topic)))))
 
+(define-message message ()
+  ((offset (int64))))
+
+(define-message message-set ()
+  ((messages (list (message)))))
+
+(define-message produce-request ()
+  ((required-aks (int16 1))
+   (timeout (int32))))
+
