@@ -1,0 +1,16 @@
+(in-package #:cl-kafka)
+
+(defmethod encode ((message meta-data-request) stream)
+  (encode-int16 (api-key message) stream)
+  (encode-int16 (api-version message) stream)
+  (encode-int32 (correlation-id message) stream)
+  (encode-string (client-id message) stream)
+  (encode-array (topics message) stream))
+
+(defun encode-request (name stream &key (correlation-id 123))
+  (let ((ims (flexi-streams:make-in-memory-output-stream)))
+    (encode (make-instance name :correlation-id correlation-id) ims)
+    (let ((ims-sequence (flexi-streams:get-output-stream-sequence ims)))
+      (encode-int32 (length ims-sequence) stream)
+      (write-sequence ims-sequence stream)
+      (force-output stream))))

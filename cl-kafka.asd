@@ -12,8 +12,10 @@
                 ((:file "package")
                  (:file "lambda")
                  (:file "primitives")
-                 (:file "composite")
                  (:file "messages")
+                 (:file "encoders")
+                 (:file "decoders")
+                 (:file "connection")
                  (:file "cl-kafka")))))
 
 (asdf:defsystem #:cl-kafka-test
