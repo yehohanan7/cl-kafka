@@ -15,7 +15,7 @@
 (defclass broker ()
   ((id :accessor id :initarg :id)
    (host :accessor host :initarg :host)
-   (port :accessor port :initarg port)))
+   (port :accessor port :initarg :port)))
 
 (defclass topic ()
   ((error-code :accessor error-code :initarg :error-code)

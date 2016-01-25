@@ -14,7 +14,7 @@
   (write-bytes value 16 stream))
 
 (defun encode-int32 (value stream)
-  (write-bytes value 16 stream))
+  (write-bytes value 32 stream))
 
 (defun encode-int64 (value stream)
   (write-bytes value 64 stream))
@@ -44,7 +44,7 @@
       (vector-push (read-byte stream) bytes))
     (flexi-streams:octets-to-string bytes)))
 
-(defun decode-list (element-type stream)
+(defun decode-array (element-type stream)
   (let* ((size (decode-int32 stream))
          (element (make-instance element-type))
          (result '()))

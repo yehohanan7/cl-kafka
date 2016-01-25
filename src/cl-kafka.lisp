@@ -12,7 +12,7 @@
 
 (defvar *conn* (connect "localhost" 9092))
 
-(get-topic-names *conn*)
+(topic-names *conn*)
 
 
 
