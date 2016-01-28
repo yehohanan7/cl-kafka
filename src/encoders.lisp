@@ -44,14 +44,7 @@
     (encode-binary (key object) stream)
     (encode-binary (value object) stream)
     (let ((ims-sequence (flexi-streams:get-output-stream-sequence ims)))
-      (encode-int32 (ironclad:digest-sequence :crc32 ims-sequence) stream)
+      (encode-int32 (ironclad:octets-to-integer (ironclad:digest-sequence :crc32 ims-sequence)) stream)
       (write-sequence ims-sequence stream))))
 
-(defun encode-request (name stream &key correlation-id)
-  (let ((ims (flexi-streams:make-in-memory-output-stream)))
-    (encode (make-instance name :correlation-id correlation-id) ims)
-    (let ((ims-sequence (flexi-streams:get-output-stream-sequence ims)))
-      (format t "sending message... length:~A" (length ims-sequence))
-      (encode-int32 (length ims-sequence) stream)
-      (write-sequence ims-sequence stream)
-      (force-output stream))))
+

@@ -28,8 +28,3 @@
                  :replicas (decode-array 'int32 stream)
                  :isr (decode-array 'int32 stream)))
 
-
-(defun decode-response (name stream)
-  (let* ((size (decode-int32 stream)))
-    (decode (make-instance name) stream)))
-

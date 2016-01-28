@@ -10,7 +10,7 @@
 
 (meta-data *con*)
 
-(send-message *con* "hi" :topic "test" :correlation-id 12345)
+(send-message *con* "hi" :topic "test")
 
 
 

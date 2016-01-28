@@ -4,7 +4,7 @@
 (defclass meta-data-request ()
   ((api-key :accessor api-key :initarg :api-key :initform 3)
    (api-version :accessor api-version :initarg :api-version :initform 0)
-   (correlation-id :accessor correlation-id :initarg :correlation-id)
+   (correlation-id :accessor correlation-id :initarg :correlation-id :initform 3)
    (client-id :accessor client-id :initarg :client-id :initform "cl-kafka")
    (topics :accessor topics :initarg :topics :initform '())))
 
@@ -33,7 +33,7 @@
 (defclass message ()
   ((magic-byte :accessor magic-byte :initarg :magic-byte :initform 0)
    (attributes :accessor attributes :initarg :attributes :initform 0)
-   (key :accessor key :initarg :key)
+   (key :accessor key :initarg :key :initform "")
    (value :accessor value :initarg :value)))
 
 (defclass message-set ()
@@ -51,7 +51,7 @@
 (defclass produce-request ()
   ((api-key :accessor api-key :initarg :api-key :initform 0)
    (api-version :accessor api-version :initarg :api-version :initform 0)
-   (correlation-id :accessor correlation-id :initarg :correlation-id)
+   (correlation-id :accessor correlation-id :initarg :correlation-id :initform 0)
    (client-id :accessor client-id :initarg :client-id :initform "cl-kafka")
    (required-acks :accessor required-acks :initform 1)
    (timeout :accessor timeout :initarg :timeout :initform 5000)
