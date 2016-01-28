@@ -1,5 +1,6 @@
 (in-package #:cl-kafka)
 
+
 (defclass meta-data-request ()
   ((api-key :accessor api-key :initarg :api-key :initform 3)
    (api-version :accessor api-version :initarg :api-version :initform 0)
@@ -29,33 +30,29 @@
    (replicas :accessor replicas :initarg :replicas :initform '())
    (isr :accessor isr :initarg :isr :initform '())))
 
+(defclass message ()
+  ((magic-byte :accessor magic-byte :initarg :magic-byte :initform 0)
+   (attributes :accessor attributes :initarg :attributes :initform 0)
+   (key :accessor key :initarg :key)
+   (value :accessor value :initarg :value)))
 
-'(define-message message-content ()
-  ((message-crc (int32))
-   (message-magic-byte (int8))
-   (message-attributes (int8 0))
-   (message-key "")
-   (message-value "")))
+(defclass message-set ()
+  ((offset :accessor offset :initarg :offset :initform 0)
+   (message :accessor message :initarg :message)))
 
-'(define-message messageset-content ()
-  ((messageset-offset (int64))
-   (messageset-content-size (int32))
-   (messageset-content (message-content))))
+(defclass partition-payload ()
+  ((partition :accessor partition :initarg :partition)
+  (message-set :accessor message-set :initarg :message-set)))
 
-'(define-message messageset ()
-  ((message-set-content (vector (messageset-content)))))
+(defclass topic-payload ()
+  ((topic-name :accessor topic-name :initarg :topic-name)
+   (partition-payloads :accessor partition-payloads :initarg :partition-payloads)))
 
-'(define-message partition-payload ()
-  ((partition-id (int32))
-   (partition-message-set-size (int32))
-   (partition-message-set (messageset))))
-
-'(define-message topic-payload ()
-  ((topic-name "")
-   (partition-payloads (list (partition-payload)))))
-
-'(define-message produce-request ()
-  ((required-aks (int16 1))
-   (request-timeout (int32))
-   (topic-payloads (list (topic-payload)))))
-
+(defclass produce-request ()
+  ((api-key :accessor api-key :initarg :api-key :initform 0)
+   (api-version :accessor api-version :initarg :api-version :initform 0)
+   (correlation-id :accessor correlation-id :initarg :correlation-id)
+   (client-id :accessor client-id :initarg :client-id :initform "cl-kafka")
+   (required-acks :accessor required-acks :initform 1)
+   (timeout :accessor timeout :initarg :timeout :initform 5000)
+   (topic-payloads :accessor topic-payloads :initarg :topic-payloads :initform '())))

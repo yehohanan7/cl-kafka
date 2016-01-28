@@ -6,6 +6,7 @@
                #:uuid
                #:usocket
                #:cl-json
+               #:ironclad
                #:bordeaux-threads)
   :components ((:module "src"
                 :components

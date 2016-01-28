@@ -10,6 +10,9 @@
       (setf value (+ (* value #x100) (read-byte stream))))
     value))
 
+(defun encode-int8 (value stream)
+  (write-bytes value 8 stream))
+
 (defun encode-int16 (value stream)
   (write-bytes value 16 stream))
 
@@ -26,6 +29,9 @@
 
 (defun encode-string (value stream)
   (encode-int16 (length value) stream)
+  (write-sequence (flexi-streams:string-to-octets value) stream))
+
+(defun encode-binary (value stream)
   (write-sequence (flexi-streams:string-to-octets value) stream))
 
 (defun decode-int16 (stream)

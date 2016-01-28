@@ -5,14 +5,12 @@
          (socket-stream (usocket:socket-stream socket)))
     (make-instance 'connection :socket-stream socket-stream)))
 
-(let ((connection (connect "localhost" 9092)))
-  '(get-partitions connection "__consumer_offsets")
-  '(get-topic-names connection)
-  '(get-brokers connection))
 
-(defvar *conn* (connect "localhost" 9092))
+(defvar *con* (connect "localhost" 9092))
 
-(topic-names *conn*)
+(meta-data *con*)
+
+(send-message *con* "hi" :topic "test" :correlation-id 12345)
 
 
 
