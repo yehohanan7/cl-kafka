@@ -32,7 +32,9 @@
   (write-sequence (flexi-streams:string-to-octets value) stream))
 
 (defun encode-binary (value stream)
+  (encode-int32 (length value) stream)
   (write-sequence (flexi-streams:string-to-octets value) stream))
+
 
 (defun decode-int16 (stream)
   (read-bytes 16 stream))

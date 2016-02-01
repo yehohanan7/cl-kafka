@@ -40,11 +40,9 @@
 (defmethod encode ((object message) stream)
   (let ((ims (flexi-streams:make-in-memory-output-stream)))
     (encode-int8 (magic-byte object) ims)
-    (encode-int8 (attributes object) stream)
-    (encode-binary (key object) stream)
-    (encode-binary (value object) stream)
+    (encode-int8 (attributes object) ims)
+    (encode-binary (key object) ims)
+    (encode-binary (value object) ims)
     (let ((ims-sequence (flexi-streams:get-output-stream-sequence ims)))
       (encode-int32 (ironclad:octets-to-integer (ironclad:digest-sequence :crc32 ims-sequence)) stream)
       (write-sequence ims-sequence stream))))
-
-

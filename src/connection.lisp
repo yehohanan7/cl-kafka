@@ -37,8 +37,9 @@
 
 (defmethod send-message ((connection connection) content &key topic (partition 0))
   (with-slots (socket-stream) connection
-    (let* ((message (make-instance 'message :value content))
+    (let* ((message (make-instance 'message :value content :key "key"))
            (message-set (make-instance 'message-set :message message))
            (partition-payload (make-instance 'partition-payload :partition partition :message-set message-set))
            (topic-payload (make-instance 'topic-payload :topic-name topic :partition-payloads (list partition-payload))))
-      (send-request (make-instance 'produce-request :topic-payloads (list topic-payload)) socket-stream))))
+      (send-request (make-instance 'produce-request :correlation-id 121 :topic-payloads (list topic-payload)) socket-stream)
+      (receive-response 'produce-response socket-stream))))

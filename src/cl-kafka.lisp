@@ -5,14 +5,11 @@
          (socket-stream (usocket:socket-stream socket)))
     (make-instance 'connection :socket-stream socket-stream)))
 
-
 (defvar *con* (connect "localhost" 9092))
 
-(meta-data *con*)
-
-(send-message *con* "hi" :topic "test")
-
-
+(let* ((topic-response (car (topic-responses (send-message *con* "hi" :topic "test"))))
+       (partition-response (car (partition-responses topic-response))))
+  (error-code partition-response))
 
 
 

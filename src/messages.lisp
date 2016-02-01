@@ -56,3 +56,16 @@
    (required-acks :accessor required-acks :initform 1)
    (timeout :accessor timeout :initarg :timeout :initform 5000)
    (topic-payloads :accessor topic-payloads :initarg :topic-payloads :initform '())))
+
+(defclass partition-response ()
+  ((partition :accessor partition :initarg :partition)
+   (error-code :accessor error-code :initarg :error-code)
+   (offset :accessor offset :initarg :offset)))
+
+(defclass topic-response ()
+  ((topic-name :accessor topic-name :initarg :topic-name)
+   (partition-responses :accessor partition-responses :initarg :partition-responses)))
+
+(defclass produce-response ()
+  ((correlation-id :accessor correlation-id :initarg :correlation-id)
+   (topics-responses :accessor topic-responses :initarg :topic-responses)))
