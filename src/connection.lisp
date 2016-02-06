@@ -35,11 +35,13 @@
     (send-request (make-instance 'meta-data-request) socket-stream)
     (receive-response 'meta-data-response socket-stream)))
 
-(defmethod send-message ((connection connection) content &key topic (partition 0))
+(defmethod send-message ((connection connection) content &key topic (partition 0) (correlation-id 1))
   (with-slots (socket-stream) connection
     (let* ((message (make-instance 'message :value content :key "key"))
            (message-set (make-instance 'message-set :message message))
-           (partition-payload (make-instance 'partition-payload :partition partition :message-set message-set))
-           (topic-payload (make-instance 'topic-payload :topic-name topic :partition-payloads (list partition-payload))))
-      (send-request (make-instance 'produce-request :correlation-id 121 :topic-payloads (list topic-payload)) socket-stream)
-      (receive-response 'produce-response socket-stream))))
+           (partition-group (make-instance 'partition-group :partition partition :message-set message-set))
+           (topic-group (make-instance 'topic-group :topic-name topic :partition-groups (list partition-group))))
+      (send-request (make-instance 'produce-request :correlation-id correlation-id :topic-groups (list topic-group)) socket-stream)
+      (let* ((topic-response (car (topic-responses (receive-response 'produce-response socket-stream))))
+             (partition-response (car (partition-responses topic-response))))
+        (if (= 0 (error-code partition-response)) "success" "error")))))

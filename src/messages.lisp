@@ -1,11 +1,18 @@
 (in-package #:cl-kafka)
 
-
-(defclass meta-data-request ()
-  ((api-key :accessor api-key :initarg :api-key :initform 3)
-   (api-version :accessor api-version :initarg :api-version :initform 0)
+(defclass request-header ()
+  ((api-version :accessor api-version :initarg :api-version :initform 0)
    (correlation-id :accessor correlation-id :initarg :correlation-id :initform 3)
-   (client-id :accessor client-id :initarg :client-id :initform "cl-kafka")
+   (client-id :accessor client-id :initarg :client-id :initform "cl-kafka")))
+
+(defclass produce-request (request-header)
+  ((api-key :accessor api-key :initarg :api-key :initform 0)
+   (required-acks :accessor required-acks :initform 1)
+   (timeout :accessor timeout :initarg :timeout :initform 5000)
+   (topic-groups :accessor topic-groups :initarg :topic-groups :initform '())))
+
+(defclass meta-data-request (request-header)
+  ((api-key :accessor api-key :initarg :api-key :initform 3)
    (topics :accessor topics :initarg :topics :initform '())))
 
 (defclass meta-data-response ()
@@ -40,22 +47,13 @@
   ((offset :accessor offset :initarg :offset :initform 0)
    (message :accessor message :initarg :message)))
 
-(defclass partition-payload ()
+(defclass partition-group ()
   ((partition :accessor partition :initarg :partition)
-  (message-set :accessor message-set :initarg :message-set)))
+   (message-set :accessor message-set :initarg :message-set)))
 
-(defclass topic-payload ()
+(defclass topic-group ()
   ((topic-name :accessor topic-name :initarg :topic-name)
-   (partition-payloads :accessor partition-payloads :initarg :partition-payloads)))
-
-(defclass produce-request ()
-  ((api-key :accessor api-key :initarg :api-key :initform 0)
-   (api-version :accessor api-version :initarg :api-version :initform 0)
-   (correlation-id :accessor correlation-id :initarg :correlation-id :initform 0)
-   (client-id :accessor client-id :initarg :client-id :initform "cl-kafka")
-   (required-acks :accessor required-acks :initform 1)
-   (timeout :accessor timeout :initarg :timeout :initform 5000)
-   (topic-payloads :accessor topic-payloads :initarg :topic-payloads :initform '())))
+   (partition-groups :accessor partition-groups :initarg :partition-groups)))
 
 (defclass partition-response ()
   ((partition :accessor partition :initarg :partition)

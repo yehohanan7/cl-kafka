@@ -7,9 +7,7 @@
 
 (defvar *con* (connect "localhost" 9092))
 
-(let* ((topic-response (car (topic-responses (send-message *con* "hi" :topic "test"))))
-       (partition-response (car (partition-responses topic-response))))
-  (error-code partition-response))
+(send-message *con* "hey" :topic "test")
 
 
 

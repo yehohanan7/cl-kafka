@@ -7,7 +7,6 @@
   (encode-string (client-id object) stream)
   (encode-array (topics object) stream))
 
-
 (defmethod encode ((object produce-request) stream)
   (encode-int16 (api-key object) stream)
   (encode-int16 (api-version object) stream)
@@ -15,13 +14,13 @@
   (encode-string (client-id object) stream)
   (encode-int16 (required-acks object) stream)
   (encode-int32 (timeout object) stream)
-  (encode-array (topic-payloads object) stream))
+  (encode-array (topic-groups object) stream))
 
-(defmethod encode ((object topic-payload) stream)
+(defmethod encode ((object topic-group) stream)
   (encode-string (topic-name object) stream)
-  (encode-array (partition-payloads object) stream))
+  (encode-array (partition-groups object) stream))
 
-(defmethod encode ((object partition-payload) stream)
+(defmethod encode ((object partition-group) stream)
   (encode-int32 (partition object) stream)
   (let ((ims (flexi-streams:make-in-memory-output-stream)))
     (encode (message-set object) ims)
