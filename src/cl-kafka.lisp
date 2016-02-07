@@ -5,10 +5,6 @@
          (socket-stream (usocket:socket-stream socket)))
     (make-instance 'connection :socket-stream socket-stream)))
 
-(defvar *con* (connect "localhost" 9092))
-
-(send-message *con* "hey" :topic "test")
-
 
 
 
