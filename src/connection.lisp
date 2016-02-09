@@ -21,9 +21,6 @@
 (defmethod topics ((connection connection))
   (topics (meta-data connection)))
 
-(defmethod topic-names ((connection connection))
-  (mapcar #'name (topics connection)))
-
 (defmethod topic ((connection connection) topic-name)
   (car (remove-if-not #'(lambda (topic) (string= (name topic) topic-name)) (topics connection))))
 
