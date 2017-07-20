@@ -42,7 +42,7 @@
 
 (defmethod send-message ((connection connection) content &key topic (partition 0) (correlation-id 1))
   (with-slots (socket-stream) connection
-    (send-request (create-produce-request correlation-id topic partition "key" connect))
+    (send-request (create-produce-request correlation-id topic partition "key" connect) socket-stream)
     (let* ((topic-response (car (topic-responses (receive-response 'produce-response socket-stream))))
              (partition-response (car (partition-responses topic-response))))
         (if (= 0 (error-code partition-response)) "success" "error"))))
