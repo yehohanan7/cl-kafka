@@ -17,7 +17,7 @@
   (let* ((message (make-instance 'message :value value :key key))
          (message-set (make-instance 'message-set :message message))
          (partition-group (make-instance 'partition-group :partition partition :message-set message-set))
-         (topic-group (make-instance 'topic-group :topic-name topic :partition-groups (list partition-group))))
+         (topic-group (make-instance 'topic-group :topic-name topic-name :partition-groups (list partition-group))))
     (make-instance 'produce-request :correlation-id correlation-id :topic-groups (list topic-group))))
 
 (defclass connection ()
@@ -42,7 +42,7 @@
 
 (defmethod send-message ((connection connection) content &key topic (partition 0) (correlation-id 1))
   (with-slots (socket-stream) connection
-    (send-request (create-produce-request correlation-id topic partition "key" connect) socket-stream)
+    (send-request (create-produce-request correlation-id topic partition "key" content) socket-stream)
     (let* ((topic-response (car (topic-responses (receive-response 'produce-response socket-stream))))
              (partition-response (car (partition-responses topic-response))))
         (if (= 0 (error-code partition-response)) "success" "error"))))
